@@ -12,7 +12,8 @@
     <main class="contenedor">
         <h1><img src="assets/img/logo.jpg" alt="logo"></h1>
 
-        <p class="descripcion">Esta página web que permite buscar un Pokémon escribiendo su nombre o número. La aplicación se conecta a
+        <p class="descripcion">Esta página web que permite buscar un Pokémon escribiendo su nombre o número. La
+            aplicación se conecta a
             PokéAPI, una API que proporciona información sobre los Pokémon.</p>
 
         <p class="introduccion">
@@ -36,12 +37,32 @@
                 </select>
             </div>
 
+            <div class="ordenar">
+                <label for="ordenar">Ordenar por</label>
+
+                <select id="ordenar">
+                    <option value="numero">Número</option>
+                    <option value="nombre">Nombre</option>
+                    <option value="peso">Peso</option>
+                    <option value="altura">Altura</option>
+                    <option value="experiencia">Experiencia base</option>
+                </select>
+            </div>
+
+            <div class="interruptor-shiny">
+                <label for="shiny">Versión shiny</label>
+
+                <input type="checkbox" id="shiny">
+            </div>
+
         </form>
 
 
         <p id="mensaje" class="mensaje" aria-live="polite"></p>
 
         <section id="resultado" class="resultado"></section>
+
+        <div id="paginacion" class="paginacion"></div>
     </main>
 
     <script src="js/app.js"></script>

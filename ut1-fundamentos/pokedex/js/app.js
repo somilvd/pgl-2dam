@@ -3,8 +3,15 @@ const inputBusqueda = document.querySelector("#busqueda");
 const mensaje = document.querySelector("#mensaje");
 const resultado = document.querySelector("#resultado");
 const filtroTipo = document.querySelector("#filtro-tipo");
+const ordenar = document.querySelector("#ordenar");
+const shiny = document.querySelector("#shiny");
+const paginacion = document.querySelector("#paginacion");
 
 let pokemons = [];
+
+let paginaActual = 1;
+const pokemonsPorPagina = 12;
+let pokemonsMostrados = [];
 
 const obtenerPokemon = async (id) => {
     const url = `https://pokeapi.co/api/v2/pokemon/${id}`;
@@ -21,15 +28,19 @@ const obtenerPokemon = async (id) => {
         nombre: datos.name,
         imagenFrontal: datos.sprites.front_default,
         imagenTrasera: datos.sprites.back_default,
+        imagenShiny: datos.sprites.front_shiny,
         altura: datos.height,
         peso: datos.weight,
         tipos: datos.types.map(({ type }) => type.name),
         experiencia: datos.base_experience,
         habilidades: datos.abilities.map(({ ability }) => ability.name),
+        movimientos: datos.moves
+            .slice(0, 6)
+            .map(({ move }) => move.name),
         estadisticas: datos.stats.map(({ base_stat, stat }) => ({
             nombre: stat.name,
             valor: base_stat
-        })),
+        }))
     };
 };
 
@@ -37,10 +48,36 @@ const formatearId = (id) => {
     return String(id).padStart(3, "0");
 };
 
+const obtenerFavoritos = () => {
+    return JSON.parse(localStorage.getItem("favoritos")) || [];
+};
+
+const esFavorito = (pokemon) => {
+    const favoritos = obtenerFavoritos();
+
+    return favoritos.includes(pokemon.id);
+};
+
+const cambiarFavorito = (pokemon) => {
+    let favoritos = obtenerFavoritos();
+
+    if (favoritos.includes(pokemon.id)) {
+        favoritos = favoritos.filter((id) => id !== pokemon.id);
+    } else {
+        favoritos.push(pokemon.id);
+    }
+
+    localStorage.setItem("favoritos", JSON.stringify(favoritos));
+};
+
 const crearTarjeta = (pokemon) => {
     const tiposHTML = pokemon.tipos
         .map((tipo) => `<span class="tipo ${tipo}">${tipo}</span>`)
         .join("");
+
+    const imagen = shiny.checked
+        ? pokemon.imagenShiny
+        : pokemon.imagenTrasera;
 
     return `
         <article class="pokemon">
@@ -50,7 +87,7 @@ const crearTarjeta = (pokemon) => {
 
             <img
                 class="pokemon__imagen"
-                src="${pokemon.imagenTrasera}"
+                src="${imagen}"
                 alt="Imagen de ${pokemon.nombre}"
             >
 
@@ -74,7 +111,9 @@ const crearTarjeta = (pokemon) => {
                 ${tiposHTML}
             </div>
 
-            <button class="pokemon__detalles">Ver detalles</button>
+            <button class="pokemon__detalles">
+                Ver detalles
+            </button>
         </article>
     `;
 };
@@ -82,6 +121,10 @@ const crearTarjeta = (pokemon) => {
 const mostrarDetalles = (pokemon) => {
     const habilidadesHTML = pokemon.habilidades
         .map((habilidad) => `<li>${habilidad}</li>`)
+        .join("");
+
+    const movimientosHTML = pokemon.movimientos
+        .map((movimiento) => `<li>${movimiento}</li>`)
         .join("");
 
     const estadisticasHTML = pokemon.estadisticas
@@ -121,15 +164,27 @@ const mostrarDetalles = (pokemon) => {
         })
         .join("");
 
+    const indice = pokemonsMostrados.findIndex((pokemonActual) => {
+        return pokemonActual.id === pokemon.id;
+    });
+
     resultado.insertAdjacentHTML(
         "beforeend",
         `
         <div class="pokemon__panel">
             <div class="pokemon__panel-contenido">
 
-                <button class="pokemon__cerrar">
-                    Cerrar
-                </button>
+                <div class="pokemon__cabecera">
+                    <span class="pokemon__pagina">
+                        Página ${paginaActual} de ${Math.ceil(
+                            pokemonsMostrados.length / pokemonsPorPagina
+                        )}
+                    </span>
+
+                    <button class="pokemon__cerrar">
+                        Cerrar
+                    </button>
+                </div>
 
                 <p>
                     N.º ${formatearId(pokemon.id)}
@@ -137,11 +192,32 @@ const mostrarDetalles = (pokemon) => {
 
                 <h2>${pokemon.nombre}</h2>
 
+                <button class="pokemon__favorito ${esFavorito(pokemon) ? "favorito-activo" : ""
+        }">
+                    ${esFavorito(pokemon)
+            ? "★ Quitar de favoritos"
+            : "☆ Añadir a favoritos"
+        }
+                </button>
+
                 <img
-                    src="${pokemon.imagenFrontal}"
+                    src="${shiny.checked
+            ? pokemon.imagenShiny
+            : pokemon.imagenFrontal
+        }"
                     alt="Imagen de ${pokemon.nombre}"
                     class="pokemon__imagen-detalle"
                 >
+
+                <div class="pokemon__navegacion">
+                    <button class="pokemon__anterior">
+                        Anterior
+                    </button>
+
+                    <button class="pokemon__siguiente">
+                        Siguiente
+                    </button>
+                </div>
 
                 <h3>Información</h3>
 
@@ -173,6 +249,12 @@ const mostrarDetalles = (pokemon) => {
                     ${habilidadesHTML}
                 </ul>
 
+                <h3>Movimientos</h3>
+
+                <ul>
+                    ${movimientosHTML}
+                </ul>
+
                 <h3>Estadísticas base</h3>
 
                 <ul>
@@ -185,43 +267,176 @@ const mostrarDetalles = (pokemon) => {
     );
 
     const panel = resultado.querySelector(".pokemon__panel");
-    const botonCerrar = panel.querySelector(".pokemon__cerrar");
+
+    const botonCerrar =
+        panel.querySelector(".pokemon__cerrar");
+
+    const botonAnterior =
+        panel.querySelector(".pokemon__anterior");
+
+    const botonSiguiente =
+        panel.querySelector(".pokemon__siguiente");
+
+    const botonFavorito =
+        panel.querySelector(".pokemon__favorito");
 
     botonCerrar.addEventListener("click", () => {
         panel.remove();
     });
+
+    botonFavorito.addEventListener("click", () => {
+        cambiarFavorito(pokemon);
+
+        botonFavorito.textContent = esFavorito(pokemon)
+            ? "★ Quitar de favoritos"
+            : "☆ Añadir a favoritos";
+
+        botonFavorito.classList.toggle(
+            "favorito-activo",
+            esFavorito(pokemon)
+        );
+    });
+
+    if (indice === 0) {
+        botonAnterior.disabled = true;
+    }
+
+    if (indice === pokemonsMostrados.length - 1) {
+        botonSiguiente.disabled = true;
+    }
+
+    botonAnterior.addEventListener("click", () => {
+        if (indice > 0) {
+            panel.remove();
+
+            paginaActual = Math.ceil(
+                indice / pokemonsPorPagina
+            );
+
+            mostrarPokemons(pokemonsMostrados);
+
+            const pokemonAnterior =
+                pokemonsMostrados[indice - 1];
+
+            mostrarDetalles(pokemonAnterior);
+        }
+    });
+
+    botonSiguiente.addEventListener("click", () => {
+        if (indice < pokemonsMostrados.length - 1) {
+            panel.remove();
+
+            paginaActual = Math.floor(
+                (indice + 1) / pokemonsPorPagina
+            ) + 1;
+
+            mostrarPokemons(pokemonsMostrados);
+
+            const pokemonSiguiente =
+                pokemonsMostrados[indice + 1];
+
+            mostrarDetalles(pokemonSiguiente);
+        }
+    });
 };
 
-
 const mostrarPokemons = (lista) => {
-    resultado.innerHTML = lista
+    pokemonsMostrados = lista;
+
+    const inicio =
+        (paginaActual - 1) * pokemonsPorPagina;
+
+    const fin = inicio + pokemonsPorPagina;
+
+    const pokemonsPagina = lista.slice(inicio, fin);
+
+    resultado.innerHTML = pokemonsPagina
         .map((pokemon) => crearTarjeta(pokemon))
         .join("");
 
-    const tarjetas = resultado.querySelectorAll(".pokemon");
+    const tarjetas =
+        resultado.querySelectorAll(".pokemon");
 
     tarjetas.forEach((tarjeta, indice) => {
-        const imagen = tarjeta.querySelector(".pokemon__imagen");
-        const pokemon = lista[indice];
-        const botonDetalles = tarjeta.querySelector(".pokemon__detalles");
+        const imagen =
+            tarjeta.querySelector(".pokemon__imagen");
+
+        const pokemon = pokemonsPagina[indice];
+
+        const botonDetalles =
+            tarjeta.querySelector(".pokemon__detalles");
 
         tarjeta.addEventListener("mouseenter", () => {
-            imagen.src = pokemon.imagenFrontal;
+            if (!shiny.checked) {
+                imagen.src = pokemon.imagenFrontal;
+            }
         });
 
         tarjeta.addEventListener("mouseleave", () => {
-            imagen.src = pokemon.imagenTrasera;
+            if (!shiny.checked) {
+                imagen.src = pokemon.imagenTrasera;
+            }
         });
 
         botonDetalles.addEventListener("click", (evento) => {
             evento.stopPropagation();
+
             mostrarDetalles(pokemon);
         });
     });
+
+    mostrarPaginacion();
+};
+
+const mostrarPaginacion = () => {
+    const totalPaginas = Math.ceil(
+        pokemonsMostrados.length / pokemonsPorPagina
+    );
+
+    paginacion.innerHTML = "";
+
+    if (totalPaginas <= 1) {
+        return;
+    }
+
+    paginacion.innerHTML = `
+        <span>
+            Página ${paginaActual} de ${totalPaginas}
+        </span>
+    `;
+};
+
+const ordenarPokemons = (lista) => {
+    const copia = [...lista];
+
+    if (ordenar.value === "numero") {
+        copia.sort((a, b) => a.id - b.id);
+    }
+
+    if (ordenar.value === "nombre") {
+        copia.sort((a, b) =>
+            a.nombre.localeCompare(b.nombre)
+        );
+    }
+
+    if (ordenar.value === "peso") {
+        copia.sort((a, b) => a.peso - b.peso);
+    }
+
+    if (ordenar.value === "altura") {
+        copia.sort((a, b) => a.altura - b.altura);
+    }
+
+    if (ordenar.value === "experiencia") {
+        copia.sort(
+            (a, b) => a.experiencia - b.experiencia
+        );
+    }
+
+    return copia;
 };
 
 const cargarPokemons = async () => {
-    mensaje.textContent = "Preparado para comenzar.";
     mensaje.textContent = "Cargando Pokémon...";
 
     try {
@@ -234,27 +449,38 @@ const cargarPokemons = async () => {
         pokemons = await Promise.all(peticiones);
 
         crearFiltrosTipo();
+
+        paginaActual = 1;
+
         mostrarPokemons(pokemons);
 
-        mensaje.textContent = "Aplicación preparada. Puedes buscar un Pokémon.";
+        mensaje.textContent =
+            "Aplicación preparada. Puedes buscar un Pokémon.";
     } catch (error) {
-        mensaje.textContent = "No se han podido cargar los Pokémon.";
+        mensaje.textContent =
+            "No se han podido cargar los Pokémon.";
+
+        console.error(error);
     }
 };
 
 const crearFiltrosTipo = () => {
-    const tipos = pokemons.flatMap((pokemon) => pokemon.tipos);
+    const tipos = pokemons.flatMap(
+        (pokemon) => pokemon.tipos
+    );
+
     const tiposUnicos = [...new Set(tipos)];
 
     tiposUnicos.sort();
 
     tiposUnicos.forEach((tipo) => {
         filtroTipo.innerHTML += `
-            <option value="${tipo}">${tipo}</option>
+            <option value="${tipo}">
+                ${tipo}
+            </option>
         `;
     });
 };
-
 
 const filtrarPokemons = () => {
     const busqueda = inputBusqueda.value
@@ -264,38 +490,58 @@ const filtrarPokemons = () => {
     const tipoSeleccionado = filtroTipo.value;
 
     const resultados = pokemons.filter((pokemon) => {
-
-
         const coincideBusqueda =
             !busqueda ||
             pokemon.nombre.includes(busqueda) ||
             String(pokemon.id) === busqueda;
 
-
         const coincideTipo =
             tipoSeleccionado === "todos" ||
             pokemon.tipos.includes(tipoSeleccionado);
-
 
         return coincideBusqueda && coincideTipo;
     });
 
     if (resultados.length === 0) {
         resultado.innerHTML = "";
-        mensaje.textContent = "No se ha encontrado ningún Pokémon.";
+
+        paginacion.innerHTML = "";
+
+        mensaje.textContent =
+            "No se ha encontrado ningún Pokémon.";
+
+        paginaActual = 1;
+
         return;
     }
 
     mensaje.textContent = "";
-    mostrarPokemons(resultados);
 
+    paginaActual = 1;
+
+    mostrarPokemons(
+        ordenarPokemons(resultados)
+    );
 };
 
+inputBusqueda.addEventListener(
+    "input",
+    filtrarPokemons
+);
 
+filtroTipo.addEventListener(
+    "change",
+    filtrarPokemons
+);
 
-inputBusqueda.addEventListener("input", filtrarPokemons);
-filtroTipo.addEventListener("change", filtrarPokemons);
+ordenar.addEventListener(
+    "change",
+    filtrarPokemons
+);
 
+shiny.addEventListener("change", () => {
+    filtrarPokemons();
+});
 
 formulario.addEventListener("submit", (evento) => {
     evento.preventDefault();
