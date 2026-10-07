@@ -7,8 +7,14 @@ body {
     margin: 0;
     padding: 2rem 1rem;
     font-family: Arial, sans-serif;
-    color: #e5e7eb;
-    background: #0c1325;
+    color: #1f2937;
+    background: linear-gradient(
+        to bottom,
+        #dc2626 0%,
+        #dc2626 50%,
+        #ffffff 50%,
+        #ffffff 100%
+    );
 }
 
 .contenedor {
