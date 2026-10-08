@@ -81,21 +81,21 @@ const crearTarjeta = (pokemon) => {
 
     return `
         <article class="pokemon">
-            <p class="pokemon__numero">
+            <p class="pokemon_numero">
                 N.º ${formatearId(pokemon.id)}
             </p>
 
             <img
-                class="pokemon__imagen"
+                class="pokemon_imagen"
                 src="${imagen}"
                 alt="Imagen de ${pokemon.nombre}"
             >
 
-            <h2 class="pokemon__nombre">
+            <h2 class="pokemon_nombre">
                 ${pokemon.nombre}
             </h2>
 
-            <div class="pokemon__datos">
+            <div class="pokemon_datos">
                 <p>
                     <strong>Altura</strong><br>
                     ${pokemon.altura / 10} m
@@ -107,11 +107,11 @@ const crearTarjeta = (pokemon) => {
                 </p>
             </div>
 
-            <div class="pokemon__tipos">
+            <div class="pokemon_tipos">
                 ${tiposHTML}
             </div>
 
-            <button class="pokemon__detalles">
+            <button class="pokemon_detalles">
                 Ver detalles
             </button>
         </article>
@@ -171,17 +171,17 @@ const mostrarDetalles = (pokemon) => {
     resultado.insertAdjacentHTML(
         "beforeend",
         `
-        <div class="pokemon__panel">
-            <div class="pokemon__panel-contenido">
+        <div class="pokemon_panel">
+            <div class="pokemon_panel-contenido">
 
-                <div class="pokemon__cabecera">
-                    <span class="pokemon__pagina">
+                <div class="pokemon_cabecera">
+                    <span class="pokemon_pagina">
                         Página ${paginaActual} de ${Math.ceil(
-                            pokemonsMostrados.length / pokemonsPorPagina
-                        )}
+            pokemonsMostrados.length / pokemonsPorPagina
+        )}
                     </span>
 
-                    <button class="pokemon__cerrar">
+                    <button class="pokemon_cerrar">
                         Cerrar
                     </button>
                 </div>
@@ -192,7 +192,7 @@ const mostrarDetalles = (pokemon) => {
 
                 <h2>${pokemon.nombre}</h2>
 
-                <button class="pokemon__favorito ${esFavorito(pokemon) ? "favorito-activo" : ""
+                <button class="pokemon_favorito ${esFavorito(pokemon) ? "favorito-activo" : ""
         }">
                     ${esFavorito(pokemon)
             ? "★ Quitar de favoritos"
@@ -206,22 +206,22 @@ const mostrarDetalles = (pokemon) => {
             : pokemon.imagenFrontal
         }"
                     alt="Imagen de ${pokemon.nombre}"
-                    class="pokemon__imagen-detalle"
+                    class="pokemon_imagen-detalle"
                 >
 
-                <div class="pokemon__navegacion">
-                    <button class="pokemon__anterior">
+                <div class="pokemon_navegacion">
+                    <button class="pokemon_anterior">
                         Anterior
                     </button>
 
-                    <button class="pokemon__siguiente">
+                    <button class="pokemon_siguiente">
                         Siguiente
                     </button>
                 </div>
 
                 <h3>Información</h3>
 
-                <div class="pokemon__informacion">
+                <div class="pokemon_informacion">
                     <p>
                         <strong>Tipo:</strong>
                         ${pokemon.tipos.join(", ")}
@@ -266,19 +266,19 @@ const mostrarDetalles = (pokemon) => {
         `
     );
 
-    const panel = resultado.querySelector(".pokemon__panel");
+    const panel = resultado.querySelector(".pokemon_panel");
 
     const botonCerrar =
-        panel.querySelector(".pokemon__cerrar");
+        panel.querySelector(".pokemon_cerrar");
 
     const botonAnterior =
-        panel.querySelector(".pokemon__anterior");
+        panel.querySelector(".pokemon_anterior");
 
     const botonSiguiente =
-        panel.querySelector(".pokemon__siguiente");
+        panel.querySelector(".pokemon_siguiente");
 
     const botonFavorito =
-        panel.querySelector(".pokemon__favorito");
+        panel.querySelector(".pokemon_favorito");
 
     botonCerrar.addEventListener("click", () => {
         panel.remove();
@@ -359,12 +359,12 @@ const mostrarPokemons = (lista) => {
 
     tarjetas.forEach((tarjeta, indice) => {
         const imagen =
-            tarjeta.querySelector(".pokemon__imagen");
+            tarjeta.querySelector(".pokemon_imagen");
 
         const pokemon = pokemonsPagina[indice];
 
         const botonDetalles =
-            tarjeta.querySelector(".pokemon__detalles");
+            tarjeta.querySelector(".pokemon_detalles");
 
         tarjeta.addEventListener("mouseenter", () => {
             if (!shiny.checked) {
