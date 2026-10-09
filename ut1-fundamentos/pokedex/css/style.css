@@ -9,6 +9,11 @@ body {
     color: #172554;
 }
 
+#contador-resultados {
+    font-size: 25px;
+    font-weight: bold;
+}
+
 .contenedor {
     width: min(1500px, 94%);
     margin: 0 auto;

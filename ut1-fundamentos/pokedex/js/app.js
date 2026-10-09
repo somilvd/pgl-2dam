@@ -6,6 +6,7 @@ const filtroTipo = document.querySelector("#filtro-tipo");
 const ordenar = document.querySelector("#ordenar");
 const shiny = document.querySelector("#shiny");
 const paginacion = document.querySelector("#paginacion");
+const contadorResultados = document.querySelector("#contador-resultados")
 
 let pokemons = [];
 
@@ -490,6 +491,7 @@ const filtrarPokemons = () => {
     const tipoSeleccionado = filtroTipo.value;
 
     const resultados = pokemons.filter((pokemon) => {
+        
         const coincideBusqueda =
             !busqueda ||
             pokemon.nombre.includes(busqueda) ||
@@ -502,6 +504,8 @@ const filtrarPokemons = () => {
         return coincideBusqueda && coincideTipo;
     });
 
+    contadorResultados.textContent = `Resultados encontrados: ${resultados.length}`;
+    
     if (resultados.length === 0) {
         resultado.innerHTML = "";
 
@@ -538,6 +542,7 @@ ordenar.addEventListener(
     "change",
     filtrarPokemons
 );
+
 
 shiny.addEventListener("change", () => {
     filtrarPokemons();

@@ -467,3 +467,34 @@ Otra dificultad fue combinar correctamente la búsqueda por nombre o número con
 
 También fue necesario controlar los diferentes estados de la aplicación y gestionar los errores para evitar que la interfaz quedase bloqueada.
 
+# Modificaciones Finales
+
+## Ejercicio 1. Contador de resultados
+
+1. En el index.html: Ponemos esto donde queramos que aparezca el contador, en mi caso, lo puse debajo del formulario:
+```html
+<p id="contador-resultados"></p>
+```
+2. Añadí junto a las demás constantes:
+```js
+const contadorResultados = document.querySelector("#contador-resultados");
+```
+
+3. En filtrarPokemons()
+Justo después de crear resultados: 
+
+```js
+contadorResultados.textContent =
+    `Resultados encontrados: ${resultados.length}`;
+Quedaría así:
+const resultados = pokemons.filter((pokemon) => {
+    // ...
+});
+```
+```js
+contadorResultados.textContent =
+    `Resultados encontrados: ${resultados.length}`;
+```
+Nota: El contador sale después de buscar cualquier cosa.
+
+## Ejercicio 3. 
