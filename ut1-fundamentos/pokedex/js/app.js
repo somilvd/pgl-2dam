@@ -6,7 +6,8 @@ const filtroTipo = document.querySelector("#filtro-tipo");
 const ordenar = document.querySelector("#ordenar");
 const shiny = document.querySelector("#shiny");
 const paginacion = document.querySelector("#paginacion");
-const contadorResultados = document.querySelector("#contador-resultados")
+const contadorResultados = document.querySelector("#contador-resultados");
+const miEquipo = document.querySelector("#mi-equipo");
 
 let pokemons = [];
 
@@ -115,6 +116,15 @@ const crearTarjeta = (pokemon) => {
             <button class="pokemon_detalles">
                 Ver detalles
             </button>
+
+            <button class="pokemon_favorito ${esFavorito(pokemon) ? "favorito-activo" : ""
+        }">
+                    ${esFavorito(pokemon)
+            ? "Quitar del equipo"
+            : "Añadir a equipo"
+        }
+            </button>
+            
         </article>
     `;
 };
@@ -192,14 +202,6 @@ const mostrarDetalles = (pokemon) => {
                 </p>
 
                 <h2>${pokemon.nombre}</h2>
-
-                <button class="pokemon_favorito ${esFavorito(pokemon) ? "favorito-activo" : ""
-        }">
-                    ${esFavorito(pokemon)
-            ? "★ Quitar de favoritos"
-            : "☆ Añadir a favoritos"
-        }
-                </button>
 
                 <img
                     src="${shiny.checked
@@ -501,11 +503,14 @@ const filtrarPokemons = () => {
             tipoSeleccionado === "todos" ||
             pokemon.tipos.includes(tipoSeleccionado);
 
+        const coincideFavorito =
+           !miEquipo.checked ||
+           esFavorito(pokemon);
         return coincideBusqueda && coincideTipo;
     });
 
     contadorResultados.textContent = `Resultados encontrados: ${resultados.length}`;
-    
+
     if (resultados.length === 0) {
         resultado.innerHTML = "";
 
@@ -547,6 +552,11 @@ ordenar.addEventListener(
 shiny.addEventListener("change", () => {
     filtrarPokemons();
 });
+
+miEquipo.addEventListener(
+   "change",
+   filtrarPokemons
+);
 
 formulario.addEventListener("submit", (evento) => {
     evento.preventDefault();
