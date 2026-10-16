@@ -66,7 +66,7 @@ Estructura inicial:
 
 Estructura final:
 
-![Estructura final del proyecto]()
+![Estructura final del proyecto](/capturas/estructura-final.png)
 
 ## Primera pantalla de GameShelf
 
@@ -74,7 +74,15 @@ Estructura final:
 
 ## Filtro de disponibilidad activo
 
+![](/capturas/filtro-disponibilidad.png)
+
 ## Aplicación final con el filtro de precio
+
+![](/capturas/app-final.png)
+
+## Filtro precio < 15 €
+
+![](/capturas/app-final-precio.png)
 
 # 8. Añade datos y muestra tres tarjetas
 
@@ -98,6 +106,199 @@ Devuelve un componente visual `<GameCard />` configurado con las propiedades esp
 Enlace: https://developer.mozilla.org/es/docs/Web/JavaScript/Guide/Functions 
 
 # 9. Investiga y crea los estilos CSS
+
+## APP.css:
+
+```css
+
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  font-family: Arial, sans-serif;
+  color: #eeeeee;
+  background: #171a21;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: #171a21;
+}
+
+button {
+  font: inherit;
+}
+
+.app {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 25px;
+}
+
+.app h1 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 2.8rem;
+  text-align: center;
+}
+
+.app > p {
+  margin: 12px 0 28px;
+  color: #b8bdc9;
+  line-height: 1.5;
+  text-align: center;
+}
+
+/* Filtros */
+
+.app > button {
+  padding: 10px 15px;
+  margin: 0 8px 25px 0;
+  border: 1px solid #414653;
+  border-radius: 5px;
+  background: #252a34;
+  color: #eeeeee;
+  cursor: pointer;
+}
+
+.app > button:hover {
+  background: #353c49;
+}
+
+/* Catálogo */
+
+.catalog {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 22px;
+}
+
+/* Juegos */
+
+.card {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid #343a46;
+  border-radius: 8px;
+  background: #222630;
+}
+
+.card:hover {
+  border-color: #65718a;
+}
+
+.card-image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  background: #303642;
+}
+
+.card-content {
+  padding: 16px;
+}
+
+.card-genre {
+  margin: 0 0 8px;
+  color: #a6b5d4;
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.card h2 {
+  margin: 0 0 12px;
+  color: #ffffff;
+  font-size: 1.2rem;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.card p {
+  color: #c0c4cd;
+  line-height: 1.5;
+}
+
+.card-status {
+  display: inline-block;
+  padding: 5px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.card-status.available {
+  background: #244333;
+  color: #a4e0b8;
+}
+
+.card-status.unavailable {
+  background: #492b30;
+  color: #f0b0b6;
+}
+
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid #3a3f4a;
+}
+
+.card-price {
+  color: #ffffff;
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.empty-message {
+  grid-column: 1 / -1;
+  padding: 25px;
+  border: 1px solid #414653;
+  border-radius: 6px;
+  color: #c0c4cd;
+  text-align: center;
+}
+
+@media (max-width: 850px) {
+  .catalog {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+}
+
+@media (max-width: 550px) {
+  .app {
+    padding: 30px 15px;
+  }
+
+  .app h1 {
+    font-size: 2.2rem;
+  }
+
+  .catalog {
+    grid-template-columns: 1fr;
+  }
+
+  .app > button {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .card {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+}
+
+```
 
 # Sesión 3 — Interactividad, documentación y publicación
 
@@ -146,3 +347,123 @@ Dentro del return, debajo del párrafo, añadí:
 ### ¿Qué hace onClick?
 
 Es un botón. Detecta el momento exacto en el que el usuario pulsa un elemento y ejecuta la función que le hayas asignado.
+
+## Reto 11: juegos por menos de 15 €
+
+### ¿Qué he hecho?
+
+Primero he creado un segundo estado para saber si el filtro de precio está activado:
+
+```js
+const [onlyUnder15, setOnlyUnder15] = useState(false);
+```
+Empieza en `false`, por lo que al principio no se aplica el filtro de precio.
+
+Después he mantenido el filtro de disponibilidad:
+
+```js
+let visibleGames = onlyAvailable ? games.filter((game) => game.available) : games;
+```
+
+Esto significa que `visibleGames` contiene todos los juegos o solamente los disponibles, dependiendo de si `onlyAvailable` está activado.
+
+Después he aplicado el segundo filtro sobre `visibleGames`:
+
+```js
+visibleGames = visibleGames.filter((game) => game.price < 15);
+```
+
+De esta forma los filtros se pueden combinar. Por ejemplo, si los dos están activados, primero se muestran los juegos disponibles y después, de esos juegos, solamente los que cuestan menos de 15 €.
+
+También he añadido un segundo botón:
+
+`<button onClick={() => setOnlyUnder15(!onlyUnder15)}>`
+
+El `!` sirve para invertir el estado: si es `true`, pasa a `false`; si es `false`, pasa a `true`.
+
+Finalmente, he cambiado el `map()` para que utilice `visibleGames`:
+
+`visibleGames.map((game) => ...)`
+
+Así se muestran solamente los juegos que cumplen los filtros activos.
+
+### Preguntas
+
+#### ¿Qué significa `game.price < 15`?
+
+Significa que el precio del juego (`game.price`) tiene que ser menor que 15.
+
+#### ¿Qué lista debe pasar por el segundo `filter()`?
+
+Debe pasar `visibleGames`.
+
+Esto es importante porque `visibleGames` ya tiene aplicado el filtro de disponibilidad.
+
+Si utilizáramos `games.filter(...)` otra vez, perderíamos el primer filtro cuando los dos estuvieran activados.
+
+Por eso hacemos:
+
+`visibleGames = visibleGames.filter((game) => game.price < 15);`
+
+#### ¿Cómo inviertes el estado?
+
+Usamos el signo `!`:
+
+`setOnlyUnder15(!onlyUnder15)`
+
+Si `onlyUnder15` es `false`, `!onlyUnder15` es `true`.
+
+Si `onlyUnder15` es `true`, `!onlyUnder15` es `false`.
+
+Así, cada vez que pulsamos el botón, el filtro se activa o se desactiva.
+
+#### ¿Qué texto verá la persona en cada estado?
+
+Para el filtro de disponibilidad:
+
+- Si está desactivado -> "Solo disponibles"
+- Si está activado -> "Mostrar todos"
+
+Para el filtro de precio:
+
+- Si está desactivado -> "Menos de 15 €
+- Si está activado -> "Mostrar todos los precios"
+
+Esto se consigue utilizando un operador ternario:
+
+`{onlyUnder15 ? "Mostrar todos los precios" : "Menos de 15 €"}`
+
+El texto cambia automáticamente dependiendo de si el estado es `true` o `false`.
+
+# 13. Reflexión
+
+## 1. ¿Qué archivo conecta el HTML con App?
+
+El archivo `main.tsx`, que carga el componente App y lo muestra en el HTML.
+
+## 2. ¿Qué diferencias hay entre React, TypeScript y Vite?
+
++ React: sirve para crear la interfaz de la aplicación.
++ TypeScript: es JavaScript con tipos, que ayuda a detectar errores.
++ Vite: sirve para ejecutar el proyecto durante el desarrollo y compilarlo para publicarlo.
+
+## 3. ¿Qué son las props de GameCard?
+
+Son los datos que recibe el componente `GameCard` para mostrar la información de cada juego, como el título, el género, el precio y si está disponible.
+
+## 4. ¿Por qué usamos setOnlyAvailable para cambiar el estado?
+
+Porque es la función que nos permite actualizar el estado onlyAvailable. Cuando cambia, React vuelve a mostrar la aplicación con los datos actualizados.
+
+## 5. ¿Qué hacen map() y filter()?
+
++ map() recorre un array y permite mostrar cada juego mediante un componente `GameCard`.
++ filter() crea un array nuevo con los juegos que cumplen una condición, como estar disponibles o costar menos de 15 €.
+
+## 6. ¿Para qué sirve key?
+
+Sirve para que React identifique cada elemento de una lista y pueda actualizarlo correctamente. En mi caso, usé el identificador de cada juego: key={game.id}.
+
+## 7. ¿Qué error te costó más resolver y cómo lo solucionaste?
+
+El error que más me costó fue conseguir que los filtros funcionaran correctamente. Lo solucioné utilizando visibleGames en el map() en lugar de games, para mostrar únicamente los juegos que cumplen las condiciones seleccionadas.
