@@ -62,15 +62,15 @@ JSX significa JavaScript XML y es la sintaxis estándar utilizada en librerías 
 
 Estructura inicial:
 
-![Estructura inical del proyecto](/capturas/estructura-inicial.png)
+![Estructura inical del proyecto](./capturas/estructura-inicial.png)
 
 Estructura final:
 
-![Estructura final del proyecto](/capturas/estructura-final.png)
+![Estructura final del proyecto](./capturas/estructura-final.png)
 
 ## Primera pantalla de GameShelf
 
-![Primera pantalla de la app](/capturas/primera-pantalla.png)
+![Primera pantalla de la app](./capturas/primera-pantalla.png)
 
 ## Filtro de disponibilidad activo
 
