@@ -74,15 +74,15 @@ Estructura final:
 
 ## Filtro de disponibilidad activo
 
-![](/capturas/filtro-disponibilidad.png)
+![](./capturas/filtro-disponibilidad.png)
 
 ## Aplicación final con el filtro de precio
 
-![](/capturas/app-final.png)
+![](./capturas/app-final.png)
 
 ## Filtro precio < 15 €
 
-![](/capturas/app-final-precio.png)
+![](./capturas/app-final-precio.png)
 
 # 8. Añade datos y muestra tres tarjetas
 
