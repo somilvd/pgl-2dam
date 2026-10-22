@@ -1,53 +1,18 @@
+import type { Game } from "../types/Game";
 
 type GameCardProps = {
-  title: string;
-  genre: string;
-  price: number;
-  available: boolean;
-  image: string;
+  game: Game;
 };
 
-export default function GameCard({
-  title,
-  genre,
-  price,
-  available,
-  image,
-}: GameCardProps) {
+export default function GameCard ({ game }: GameCardProps) {
   return (
     <article className="card">
-      <img
-        className="card-image"
-        src={image}
-        alt={`Portada de ${title}`}
-        loading="lazy"
-      />
-
-      <div className="card-content">
-        <p className="card-genre">{genre}</p>
-
-        <h2>{title}</h2>
-
-        <span
-          className={
-            available
-              ? "card-status available"
-              : "card-status unavailable"
-          }
-        >
-          {available ? "Disponible" : "No disponible"}
-        </span>
-
-        <div className="card-footer">
-          <span className="card-price">
-            {price.toLocaleString("es-ES", {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            })}{" "}
-            €
-          </span>
-        </div>
-      </div>
+      <h2>{game.name}</h2>
+      <p>Género: {game.genre ?? "Sin género disponible"}</p>
+      <p>
+        Lanzamiento en Europa:{" "} 
+        {game.releaseDates?.Europe ?? "Sin dato disponible"}
+      </p>
     </article>
   );
 }

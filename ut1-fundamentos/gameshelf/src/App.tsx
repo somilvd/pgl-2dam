@@ -1,68 +1,52 @@
-import "./App.css";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import GameCard from "./components/GameCard";
-import { useState } from "react";
+import "./App.css";
+import type { Game } from "./types/Game";
 
-type Game = {
-  id: number;
-  title: string;
-  genre: string;
-  price: number;
-  available: boolean;
-  image: string;
-};
-
-const games: Game[] = [
-  { id: 1, title: "Hollow Knight", genre: "Aventura", price: 14.99, available: true, image:"/capturas/hollow-knight.jpg" },
-  { id: 2, title: "Celeste", genre: "Plataformas", price: 19.99, available: true, image:"/capturas/celeste.jpg" },
-  { id: 3, title: "Stardew Valley", genre: "Simulación", price: 13.99, available: false, image:"/capturas/stardew-valley.jpeg" },
-  { id: 4, title: "EA FC 27", genre: "Deportes", price: 69.99, available: true, image:"/capturas/ea-fc-27.jpeg" },
-  { id: 5, title: "Elden Ring", genre: "RPG de acción", price: 59.99, available: false, image:"/capturas/elden-ring.jpeg" },
-  { id: 6, title: "Minecraft", genre: "Construcción", price: 29.99, available: false, image:"/capturas/minecraft.png" },
-  { id: 7, title: "Fortnite", genre: "Battle Royale", price: 0, available: true, image:"/capturas/fortnite.jpeg" },
-  { id: 8, title: "GTA VI", genre: "Accion y Aventura", price: 99.99, available: true, image:"/capturas/gta6.jpg" },
-  { id: 9, title: "The Legend of Zelda: Breath of the Wild", genre: "Aventura", price: 59.99, available: false, image:"/capturas/zelda.jpeg" },
-  { id: 10, title: "Hogwarts Legacy", genre: "RPG de mundo abierto", price: 74.99, available: true, image:"/capturas/hogwarts-legacy.jpeg" },
-
-
-];
+const API_URL = "https://api.sampleapis.com/switch/games";
 
 function App() {
-  const [onlyAvailable, setOnlyAvailable] = useState(false);
-  const [onlyUnder15, setOnlyUnder15] = useState(false);
-  let visibleGames = onlyAvailable
-    ? games.filter((game) => game.available)
-    : games;
+  const [games, setGames] = useState<Game[]>([]); //Estado de React es un dato que la app va a recordar mientras esté abierta
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  if (onlyUnder15) {
-    visibleGames = visibleGames.filter((game) => game.price < 15);
-  }
+  useEffect(() => {
+    async function loadGames() {
+      try {
+        const response = await axios.get<Game[]>(API_URL);
+        setGames(response.data.slice(0,15));
+      } catch (error) {
+        console.log(error);
+        setError("No se pudo cargar el catalogo. Intentelo de nuevo más tarde.");
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadGames();
+  });
   return (
     <main className="app">
-      <h1>GameShelf</h1>
-      <p>Mi catálogo de videojuegos</p>
+      <h1>Gameshelf</h1>
+      <p>Videojuegos recibidos desde la API</p>
 
-      <button onClick={() => setOnlyAvailable(!onlyAvailable)}>
-        {onlyAvailable ? "Mostrar todos" : "Solo disponibles"}
-      </button>
+      {loading && <p role="status">Cargando videojuegos...</p>} {/*Muestra mensaje de carga mientras loading sea true*/}
 
-      <button onClick={() => setOnlyUnder15(!onlyUnder15)}>
-        {onlyUnder15 ? "Mostrar todos los precios" : "Menos de 15 €"}
-      </button>
+      {error && <p role="alert">{error}</p>}
 
-      <section className="catalog">
-        {visibleGames.map((game) => (
-          <GameCard
-            key={game.id}
-            title={game.title}
-            genre={game.genre}
-            price={game.price}
-            available={game.available} 
-            image={game.image}          
-          />
-        ))}
-      </section>
+      {!loading && !error && games.length === 0 && (
+        <p>La API no ha devuelto videojuegos.</p>
+      )}
+
+      {!loading && !error && games.length > 0 && (
+        <section className="catalog">
+          {games.map((game) => (
+            <GameCard key={game.id} game={game}/>
+          ))}
+        </section>
+      )}
     </main>
-  );
+  )
 }
 
 export default App;
