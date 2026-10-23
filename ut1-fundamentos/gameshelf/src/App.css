@@ -1,19 +1,32 @@
+@import url('https://googleapis.com');
 
 * {
   box-sizing: border-box;
 }
 
 :root {
-  font-family: Arial, sans-serif;
-  color: #eeeeee;
-  background: #171a21;
+  /* Tipografía Pixel de Máquina Recreativa */
+  font-family: 'Press Start 2P', monospace;
+  color: #00ff00; /* Verde fósforo clásico de monitor CRT */
+  background: #000000; /* Negro absoluto de salón arcade */
+  
+  /* Colores Arcade de Alta Intensidad */
+  --arcade-green: #39ff14;
+  --arcade-pink: #ff007f;
+  --arcade-cyan: #00ffff;
+  --arcade-yellow: #ffff00;
+  --bg-dark: #000000;
+  --bg-card: #0d0d13;
 }
 
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background: #171a21;
+  background: #000000;
+  /* Simulación de las líneas de escaneo (Scanlines) de los monitores antiguos CRT */
+  background-image: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+  background-size: 100% 4px, 6px 100%;
 }
 
 button {
@@ -26,162 +39,185 @@ button {
   padding: 40px 25px;
 }
 
+/* Título de Pantalla de Inicio "INSERT COIN" */
 .app h1 {
   margin: 0;
-  color: #ffffff;
-  font-size: 2.8rem;
+  font-size: 2rem; /* Tamaño balanceado para fuentes pixel */
   text-align: center;
+  text-transform: uppercase;
+  color: var(--arcade-yellow);
+  letter-spacing: -1px;
+  /* Sombra de bloques de color sin difuminado (estilo de los 80) */
+  text-shadow: 4px 4px 0px var(--arcade-pink), -4px -4px 0px var(--arcade-cyan);
+  line-height: 1.4;
 }
 
 .app > p {
-  margin: 12px 0 28px;
-  color: #b8bdc9;
-  line-height: 1.5;
+  margin: 20px 0 40px;
+  color: #ffffff;
+  font-size: 0.7rem;
   text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  /* Animación de parpadeo continuo para el subtítulo */
+  animation: arcade-blink 1.5s infinite steps(2);
 }
 
-/* Filtros */
-
+/* Botones de Filtro estilo "Player 1 / Player 2 Select" */
 .app > button {
-  padding: 10px 15px;
-  margin: 0 8px 25px 0;
-  border: 1px solid #414653;
-  border-radius: 5px;
-  background: #252a34;
-  color: #eeeeee;
+  padding: 12px 16px;
+  margin: 0 12px 25px 0;
+  border: 4px solid #ffffff;
+  background: #000000;
+  color: #ffffff;
+  font-size: 0.65rem;
+  text-transform: uppercase;
   cursor: pointer;
+  box-shadow: 4px 4px 0px #ffffff;
+  transition: none; /* Cambios instantáneos sin transiciones suaves */
 }
 
 .app > button:hover {
-  background: #353c49;
+  background: var(--arcade-pink);
+  color: #000000;
+  border-color: #000000;
+  box-shadow: 4px 4px 0px var(--arcade-cyan);
 }
 
-/* Catálogo */
+.app > button:active {
+  transform: translate(4px, 4px);
+  box-shadow: 0px 0px 0px transparent;
+}
 
+/* Catálogo - Organizado de 3 en 3 */
 .catalog {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 22px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 25px;
+  margin-top: 20px;
 }
 
-/* Juegos */
-
+/* Tarjetas con Bordes Pixelados de Puntuación (Scoreboard) */
 .card {
   min-width: 0;
   overflow: hidden;
-  border: 1px solid #343a46;
-  border-radius: 8px;
-  background: #222630;
+  border: 4px solid var(--arcade-cyan);
+  background: var(--bg-card);
+  box-shadow: 6px 6px 0px rgba(0, 255, 255, 0.3);
+  position: relative;
 }
 
+/* EFECTO NUEVO: Cambio constante y fluido de color en HOVER */
 .card:hover {
-  border-color: #65718a;
-}
-
-.card-image {
-  display: block;
-  width: 100%;
-  aspect-ratio: 3 / 4;
-  object-fit: cover;
-  background: #303642;
+  /* Aplica la animación cíclica a los bordes y las sombras de bloque */
+  animation: arcade-rainbow-border 3s infinite linear;
 }
 
 .card-content {
-  padding: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
+/* Datos dentro de la tarjeta */
 .card-genre {
-  margin: 0 0 8px;
-  color: #a6b5d4;
-  font-size: 0.8rem;
-  font-weight: bold;
+  margin: 0;
+  color: var(--arcade-pink);
+  font-size: 0.55rem;
   text-transform: uppercase;
 }
 
 .card h2 {
-  margin: 0 0 12px;
+  margin: 0;
   color: #ffffff;
-  font-size: 1.2rem;
-  line-height: 1.4;
-  overflow-wrap: anywhere;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  text-transform: uppercase;
 }
 
 .card p {
-  color: #c0c4cd;
-  line-height: 1.5;
+  color: #a0a0a5;
+  font-size: 0.6rem;
+  line-height: 1.6;
 }
 
-.card-status {
-  display: inline-block;
-  padding: 5px 8px;
-  border-radius: 4px;
-  font-size: 0.8rem;
-  font-weight: bold;
-}
-
-.card-status.available {
-  background: #244333;
-  color: #a4e0b8;
-}
-
-.card-status.unavailable {
-  background: #492b30;
-  color: #f0b0b6;
+/* El texto destacado brilla en color cian */
+.card p span {
+  color: var(--arcade-cyan);
 }
 
 .card-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  margin-top: 16px;
-  padding-top: 12px;
-  border-top: 1px solid #3a3f4a;
+  margin-top: 10px;
+  padding-top: 14px;
+  border-top: 4px dashed #333344;
 }
 
-.card-price {
-  color: #ffffff;
-  font-size: 1.25rem;
-  font-weight: bold;
-}
+/* Animaciones Retro y de Color */
 
-.empty-message {
-  grid-column: 1 / -1;
-  padding: 25px;
-  border: 1px solid #414653;
-  border-radius: 6px;
-  color: #c0c4cd;
-  text-align: center;
-}
-
-@media (max-width: 850px) {
-  .catalog {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 16px;
+/* Animación para el bucle de colores en las tarjetas */
+@keyframes arcade-rainbow-border {
+  0%, 100% {
+    border-color: var(--arcade-green);
+    box-shadow: 6px 6px 0px rgba(57, 255, 20, 0.5);
+  }
+  25% {
+    border-color: var(--arcade-pink);
+    box-shadow: 6px 6px 0px rgba(255, 0, 127, 0.5);
+  }
+  50% {
+    border-color: var(--arcade-cyan);
+    box-shadow: 6px 6px 0px rgba(0, 255, 255, 0.5);
+  }
+  75% {
+    border-color: var(--arcade-yellow);
+    box-shadow: 6px 6px 0px rgba(255, 255, 0, 0.5);
   }
 }
 
-@media (max-width: 550px) {
+/* Animación de parpadeo continuo para el subtítulo */
+@keyframes arcade-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* Mensaje cuando no hay juegos */
+.empty-message {
+  grid-column: 1 / -1;
+  padding: 40px;
+  border: 4px dashed var(--arcade-pink);
+  color: var(--arcade-pink);
+  font-size: 0.8rem;
+  text-align: center;
+  text-transform: uppercase;
+  animation: arcade-blink 1s infinite steps(2);
+}
+
+/* Media Queries (Adaptación de columnas) */
+@media (max-width: 1024px) {
+  .app h1 {
+    font-size: 1.6rem;
+  }
+  
+  .catalog {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+  }
+}
+
+@media (max-width: 600px) {
   .app {
     padding: 30px 15px;
   }
 
-  .app h1 {
-    font-size: 2.2rem;
-  }
-
   .catalog {
     grid-template-columns: 1fr;
+    gap: 20px;
   }
 
   .app > button {
     width: 100%;
-    margin-bottom: 10px;
-  }
-
-  .card {
-    width: 100%;
-    max-width: 400px;
-    margin: 0 auto;
+    margin-right: 0;
+    margin-bottom: 15px;
   }
 }
