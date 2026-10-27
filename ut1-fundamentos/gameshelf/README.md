@@ -467,3 +467,11 @@ Sirve para que React identifique cada elemento de una lista y pueda actualizarlo
 ## 7. ¿Qué error te costó más resolver y cómo lo solucionaste?
 
 El error que más me costó fue conseguir que los filtros funcionaran correctamente. Lo solucioné utilizando visibleGames en el map() en lugar de games, para mostrar únicamente los juegos que cumplen las condiciones seleccionadas.
+
+# Actividad 3. Mi primera app con React + Axios
+
+Al poner el cursor sobre la tarjeta el borde de la tarjeta va cambiando de color.
+
+Resultado:
+
+![](./capturas/resultado-gameshelf.png)
