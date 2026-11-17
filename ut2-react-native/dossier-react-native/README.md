@@ -198,5 +198,68 @@ Resultado:
 
 ![](./capturas/practica7.png)
 
+## Práctica 8. Círculos dinámicos
+
+Para mantener las prácticas anteriores sin modificaciones, he creado `src/screens/Practica8Screen.tsx` y la he enlazado en el índice principal. La pantalla parte de un escenario vacío y dispone de tres controles personalizados con `TouchableOpacity` para añadir círculos de color variable (limitando cada canal RGB mediante `Math.min(255, valor)`) y alternar dinámicamente las propiedades Flexbox `flexWrap` (`wrap`/`nowrap`) y `flexDirection` (`row`/`column`).
+
+Código principal en `src/screens/Practica8Screen.tsx`:
+
+```tsx
+const agregarCirculo = () => {
+  const n = circulos.length;
+  const r = Math.min(255, Math.max(130, 190 - n * 15 + Math.max(0, (n - 4) * 28)));
+  const g = Math.min(255, Math.max(165, 210 + n * 15 - Math.max(0, (n - 4) * 25)));
+  const b = Math.min(255, Math.max(130, 185 - n * 12 + Math.max(0, (n - 3) * 25)));
+
+  setCirculos((prev) => [...prev, `rgb(${r}, ${g}, ${b})`]);
+};
+```
+
+```tsx
+<View
+  style={[
+    styles.escenario,
+    { flexDirection: direccion, flexWrap: ajuste },
+  ]}
+>
+  {circulos.map((color, index) => (
+    <View
+      key={index}
+      style={[styles.circulo, { backgroundColor: color }]}
+    >
+      <Text style={styles.textoCirculo}>C {index + 1}</Text>
+    </View>
+  ))}
+</View>
+```
+
+**Problema encontrado y solución:** Al probar la pantalla en el emulador, el botón superior `AGREGAR CÍRCULO` quedaba cubierto por la barra de estado y la cámara frontal de Android, impidiendo pulsarlo. Se resolvió envolviendo la vista en `SafeAreaView` (`react-native-safe-area-context`) con `edges={['top', 'left', 'right']}`.
+
+Resultado:
+
+![](./capturas/practica8.png)
 
 
+![](./capturas/practica8-nowrap-column.png)
+
+
+![](./capturas/practica8-nowrap-row.png)
+
+## Práctica 9 - Alineación Flexbox y componente Image
+
+En esta práctica se trabaja la distribución dinámica de elementos en pantalla mediante Flexbox y la carga de imágenes desde distintas fuentes en React Native.
+
+### Funcionalidades implementadas
+* **Control de `justifyContent`:** Uso de un campo de texto (`TextInput`) para escribir y aplicar en tiempo real valores de alineación sobre el eje principal (`flex-start`, `flex-end`, `center`, `space-between`, `space-around`, `space-evenly`).
+* **Control de `alignItems`:** Botonera interactiva (`TouchableOpacity`) que permite alternar la alineación en el eje secundario (`stretch`, `center`, `flex-start`, `flex-end`).
+* **Carga de imágenes (`Image`):** Combinación de recursos locales importados mediante `require()` y recursos externos cargados a través de su URL con la propiedad `{ uri: '...' }`.
+
+### Capturas
+
+#### Práctica 9 - Control de alineación e imágenes
+![Práctica 9](./capturas/practica9.png)
+
+#### Práctica 9.1 - Selector de imagen aleatoria
+En esta variante se gestiona un arreglo de imágenes locales mediante `useState`, mostrando una imagen distinta de forma aleatoria cada vez que se pulsa el botón y ajustando su escala con `resizeMode="contain"`.
+
+![Práctica 9.1](./capturas/practica9.1.png)
