@@ -5,7 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 const IMAGENES = [
   { nombre: 'Messi', source: require('../../capturas/img/messi.png') },
   { nombre: 'León', source: require('../../capturas/img/leon.jpeg') },
-  { nombre: 'Spotify', source: require('../../capturas/img/soptify.png') },
+  { nombre: 'Spotify', source: require('../../capturas/img/spotify.png') },
 ];
 
 export default function Practica9_1Screen() {

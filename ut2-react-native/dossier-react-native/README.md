@@ -263,3 +263,93 @@ En esta práctica se trabaja la distribución dinámica de elementos en pantalla
 En esta variante se gestiona un arreglo de imágenes locales mediante `useState`, mostrando una imagen distinta de forma aleatoria cada vez que se pulsa el botón y ajustando su escala con `resizeMode="contain"`.
 
 ![Práctica 9.1](./capturas/practica9.1.png)
+
+## Práctica 10. Calculadora
+
+Para conservar intactas las prácticas anteriores, he creado el componente reutilizable `src/components/TeclaCalculadora.tsx`, la pantalla principal `src/screens/CalculadoraScreen.tsx` y su ruta correspondiente en `src/app/practica10.tsx`. La interfaz reproduce el diseño de referencia utilizando Flexbox para organizar las filas de botones y estados (`useState` y `useRef`) para gestionar los operandos y la operación activa sin recurrir a `eval()`.
+
+- **`src/components/TeclaCalculadora.tsx`**: Componente táctil construido con `TouchableOpacity` que adapta su color de fondo (gris claro `#9B9B9B`, gris oscuro `#2D2D2D` o naranja `#FF9427`) y su ancho doble para el botón `0`.
+- **`src/screens/CalculadoraScreen.tsx`**: Contiene la pantalla de resultado con `adjustsFontSizeToFit`, la distribución de teclas y la lógica aritmética (`+`, `-`, `x`, `/`, `±`, `%` y `AC`).
+
+Código de `src/components/TeclaCalculadora.tsx`:
+
+```tsx
+import React from 'react';
+import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+
+interface Props {
+  texto: string;
+  color?: '#2D2D2D' | '#9B9B9B' | '#FF9427';
+  anchoDoble?: boolean;
+  accion: (textoNumero: string) => void;
+}
+
+export const TeclaCalculadora = ({
+  texto,
+  color = '#2D2D2D',
+  anchoDoble = false,
+  accion,
+}: Props) => {
+  return (
+    <TouchableOpacity
+      activeOpacity={0.7}
+      onPress={() => accion(texto)}
+      style={[
+        styles.boton,
+        {
+          backgroundColor: color,
+          width: anchoDoble ? 168 : 76,
+        },
+      ]}
+    >
+      <Text
+        style={[
+          styles.botonTexto,
+          {
+            color: color === '#9B9B9B' ? '#000000' : '#FFFFFF',
+            textAlign: anchoDoble ? 'left' : 'center',
+            paddingLeft: anchoDoble ? 28 : 0,
+          },
+        ]}
+      >
+        {texto}
+      </Text>
+    </TouchableOpacity>
+  );
+};
+```
+
+Código principal de cálculo en `src/screens/CalculadoraScreen.tsx`:
+
+```tsx
+const calcular = () => {
+  const num1 = Number(numero);
+  const num2 = Number(numeroAnterior);
+
+  if (ultimaOperacion.current === undefined || isNaN(num1) || isNaN(num2)) return;
+
+  switch (ultimaOperacion.current) {
+    case Operadores.sumar:
+      setNumero(`${num1 + num2}`);
+      break;
+    case Operadores.restar:
+      setNumero(`${num2 - num1}`);
+      break;
+    case Operadores.multiplicar:
+      setNumero(`${num1 * num2}`);
+      break;
+    case Operadores.dividir:
+      setNumero(num1 === 0 ? 'Error' : `${num2 / num1}`);
+      break;
+  }
+
+  setNumeroAnterior('0');
+  ultimaOperacion.current = undefined;
+};
+```
+
+**Problema encontrado y solución:** Al configurar `<StatusBar backgroundColor="#000000" barStyle="light-content" />`, TypeScript marcaba en rojo la propiedad `backgroundColor` debido al modo Edge-to-Edge de Expo. Se solucionó eliminando dicha propiedad y aplicando el fondo negro directamente al contenedor principal junto con `StatusBar.currentHeight` en Android.
+
+Resultado:
+
+![](./capturas/practica10.png)
