@@ -352,4 +352,238 @@ const calcular = () => {
 
 Resultado:
 
-![](./capturas/practica10.png)
+![Práctica 10](./capturas/practica10.png)
+
+## Práctica 11. Hook personalizado para la calculadora
+
+En esta práctica he separado la lógica de la calculadora de su interfaz mediante la creación de un hook personalizado llamado `useCalculadora.ts`. De esta manera, he mantenido el funcionamiento de la Práctica 10, pero he organizado mejor el código, separando los estados y las funciones de la pantalla principal.
+
+### Funcionalidades implementadas
+
+- **Creación del hook personalizado (`useCalculadora.ts`):** He creado el archivo `src/hooks/useCalculadora.ts` para trasladar toda la lógica de la calculadora.
+- **Gestión de estados (`useState`):** El hook mantiene los estados `numero` y `numeroAnterior`, que almacenan los operandos utilizados en las operaciones.
+- **Gestión de referencias (`useRef`):** He utilizado `useRef` para conservar la última operación seleccionada (`sumar`, `restar`, `multiplicar` o `dividir`) sin provocar renderizados adicionales.
+- **Extracción de funciones:** He trasladado al hook las funciones `limpiar`, `construirNumero`, `positivoNegativo`, `calcularPorcentaje`, `botonDividir`, `botonMultiplicar`, `botonRestar`, `botonSumar` y `calcular`.
+- **Integración en la pantalla:** He modificado `src/screens/CalculadoraScreen.tsx` para importar y utilizar `useCalculadora()`, obteniendo de él los estados y las funciones necesarios para controlar los botones.
+- **Conservación del componente reutilizable:** He mantenido `src/components/TeclaCalculadora.tsx` sin modificaciones, ya que sigue encargándose de representar las teclas y gestionar sus pulsaciones.
+
+### Organización de los archivos
+
+- `src/hooks/useCalculadora.ts`: Contiene los estados, las referencias y las funciones que controlan el funcionamiento de la calculadora.
+- `src/screens/CalculadoraScreen.tsx`: Contiene la interfaz gráfica y utiliza el hook personalizado.
+- `src/components/TeclaCalculadora.tsx`: Mantiene el componente reutilizable de las teclas.
+
+### Resultado
+
+La calculadora mantiene el diseño y las operaciones de la Práctica 10, pero ahora tiene el código mejor organizado y separado en archivos según su responsabilidad.
+
+
+## Práctica 12. Color aleatorio con confirmación
+
+En esta práctica he creado una pantalla que permite cambiar el color de fondo de forma aleatoria, mostrando una alerta para confirmar si quiero aplicar el nuevo color. También he añadido la posibilidad de escribir un color manualmente mediante un cuadro de diálogo creado con `Modal` y `TextInput`, evitando depender de paquetes nativos de terceros.
+
+### Funcionalidades implementadas
+
+- **Selección aleatoria de colores:** He creado una lista de colores y utilizo `Math.random()` y `Math.floor()` para seleccionar uno al azar.
+- **Confirmación del cambio:** Al pulsar el botón «Cambiar de color», aparece una alerta (`Alert.alert`) indicando el color propuesto, con las opciones «Aceptar» y «Cancelar».
+- **Aplicación del color:** Si pulso «Aceptar», se actualiza el fondo de la pantalla mediante `setFondo()`. Si pulso «Cancelar», se conserva el color anterior.
+- **Introducción manual de colores:** He añadido un botón «Escribir un color» que abre una ventana de diálogo mediante el componente `Modal`.
+- **Uso de `TextInput`:** Dentro del diálogo he incorporado un campo de texto para escribir el nombre de un color CSS.
+- **Control de la ventana:** He añadido los botones «Cancelar» y «Aceptar» para cerrar el diálogo o aplicar el color introducido.
+
+### Componentes y estados utilizados
+
+- `useState`: Permite controlar el color de fondo, la visibilidad del diálogo y el texto del color introducido.
+- `Alert`: Muestra la alerta de confirmación del cambio de color.
+- `Modal`: Crea una ventana de diálogo compatible con Expo y Android.
+- `TextInput`: Permite introducir manualmente el color.
+- `Button`: Permite ejecutar las acciones de cambiar el color, escribirlo, aceptar o cancelar.
+
+### Organización de los archivos
+
+- `screens/Practica12Screen.tsx`: Contiene la pantalla, los estados, las funciones y los componentes necesarios para realizar la práctica.
+
+### Resultado
+
+He conseguido crear una pantalla que permite cambiar el fondo a un color aleatorio previa confirmación. También puedo introducir manualmente un color y aplicarlo mediante un diálogo personalizado.
+
+![Práctica 12 color aleatorio](./capturas/practica12.png)
+
+![Práctica 12 introducir color](./capturas/practica12-intro-color.png)
+
+## Práctica 13. Introducir el color
+
+En esta práctica he creado una pantalla que permite introducir manualmente un color mediante un diálogo personalizado. Cuando escribo un color válido y pulso «Aceptar», el fondo de la pantalla cambia. Si pulso «Cancelar», se cierra el diálogo sin modificar el fondo.
+
+También he incorporado un componente `Switch` para practicar el uso de controles booleanos en React Native.
+
+### Funcionalidades implementadas
+
+- **Introducción manual de colores:** He añadido un botón «Introducir color» que abre una ventana de diálogo mediante el componente `Modal`.
+- **Uso de `TextInput`:** He incorporado un campo de texto para escribir el nombre de un color CSS o un código hexadecimal.
+- **Validación del color:** He creado una comprobación para aceptar nombres de colores incluidos en la lista o códigos hexadecimales válidos de tres o seis caracteres.
+- **Aplicación del color:** Si el valor introducido es válido y pulso «Aceptar», se actualiza el fondo mediante `setFondo()`.
+- **Cancelación del diálogo:** Si pulso «Cancelar», se cierra la ventana sin cambiar el color de fondo.
+- **Control de errores:** Si el campo está vacío o el color no es válido, aparece una alerta informando del problema.
+- **Uso de `Switch`:** He añadido un interruptor que permite activar o desactivar una opción. Su estado se controla mediante `value` y `onValueChange`, y su indicador cambia de color con `thumbColor`.
+
+### Componentes y estados utilizados
+
+- `useState`: Permite controlar el color de fondo, la visibilidad del diálogo, el texto introducido y el estado del interruptor.
+- `Modal`: Crea una ventana de diálogo personalizada.
+- `TextInput`: Permite escribir el color que se quiere aplicar.
+- `Switch`: Permite activar o desactivar una opción.
+- `Alert`: Muestra mensajes cuando el color introducido no es válido.
+- `Button`: Permite abrir el diálogo, aceptar el color o cancelar la operación.
+
+### Organización de los archivos
+
+- `screens/Practica13Screen.tsx`: Contiene la pantalla, los estados, la validación del color y los componentes necesarios para realizar la práctica.
+
+### Resultado
+
+He conseguido crear una pantalla que permite introducir un color manualmente, comprobar que sea válido y aplicarlo al fondo. Además, he practicado el uso del componente `Switch` para controlar una opción mediante un interruptor.
+
+![Práctica 13](./capturas/practica13.png)
+
+## Práctica 14. Borde activado por Switch
+
+### Objetivo
+Reproducir un control mediante un componente `Switch` que permita activar y desactivar un borde rojo alrededor de la pantalla. Además, crear un formulario controlado para introducir los datos de una persona.
+
+### Desarrollo
+
+**1. Switch para activar el borde**
+
+Se utiliza el componente `Switch` de React Native junto con `useState` para controlar si el borde está activado.
+
+- Cuando está desactivado, el indicador es de color marrón.
+- Cuando está activado, el indicador es de color naranja.
+- Al activarlo, aparece un borde rojo alrededor de la pantalla.
+- Al desactivarlo, el borde desaparece.
+
+Se utilizan las propiedades `trackColor`, `thumbColor`, `value` y `onValueChange`.
+
+**2. Formulario de persona**
+
+Se crea un formulario controlado mediante `useState` con los siguientes campos:
+
+- Nombre: campo de texto.
+- Edad: campo numérico almacenado inicialmente como texto.
+- Casado: interruptor de tipo `Switch`.
+- Jubilado: interruptor de tipo `Switch`.
+
+Se define el tipo `DatosPersona` para establecer los tipos de datos de cada campo.
+
+**3. Actualización de los campos**
+
+Se crea una función reutilizable llamada `cambiarCampo`, utilizando `keyof DatosPersona` y genéricos de TypeScript para actualizar los diferentes campos del formulario.
+
+**4. Validación y envío**
+
+Al pulsar el botón «Enviar formulario», se comprueba que:
+
+- El nombre no esté vacío.
+- La edad no esté vacía.
+- La edad sea un número válido y mayor que cero.
+
+Para convertir la edad se utiliza `Number()` y para comprobar que sea un número finito se utiliza `Number.isFinite()`.
+
+Si los datos son correctos, se muestra una alerta con toda la información introducida. Si hay algún error, se muestra una alerta indicando qué debe corregirse.
+
+### Componentes y conceptos utilizados
+
+- `View`
+- `Text`
+- `TextInput`
+- `Switch`
+- `Button`
+- `Alert`
+- `StyleSheet`
+- `useState`
+- Tipos e interfaces de TypeScript
+- Funciones genéricas
+- Formularios controlados
+- Validación de datos
+
+
+### Resultado
+
+![Práctica 14](./capturas/practica14.png)
+
+
+## Práctica 15. Completar el formulario
+
+### Objetivo
+Completar el formulario de persona utilizando los componentes de React Native y mostrar los datos introducidos en un resumen final. Además, utilizar `FlatList` para representar una lista de personas.
+
+### Desarrollo
+
+**1. Formulario de persona**
+
+Se crea un formulario controlado mediante `useState` con cuatro campos:
+
+- Nombre: campo de texto mediante `TextInput`.
+- Edad: campo numérico mediante `TextInput`.
+- Casado: interruptor mediante `Switch`.
+- Jubilado: interruptor mediante `Switch`.
+
+Se utiliza el tipo `DatosPersona` para definir los tipos de datos de cada campo.
+
+**2. Actualización de los campos**
+
+Se implementa la función reutilizable `cambiarCampo`, utilizando `keyof DatosPersona` y genéricos de TypeScript para actualizar los valores del formulario.
+
+**3. Validación y registro**
+
+Al pulsar el botón «Añadir persona», se comprueba que:
+
+- El nombre no esté vacío.
+- La edad no esté vacía.
+- La edad sea un número válido y mayor que cero.
+
+Si los datos son correctos, se crea un objeto de tipo `Persona` y se añade al estado mediante `setPersonas`.
+
+Después de registrar una persona, los campos del formulario se limpian.
+
+**4. Lista de personas con FlatList**
+
+Se utiliza `FlatList` para mostrar las personas registradas.
+
+Se emplean las siguientes propiedades:
+
+- `data`: contiene el array de personas.
+- `renderItem`: representa los datos de cada persona.
+- `keyExtractor`: identifica cada elemento mediante su ID.
+- `ListHeaderComponent`: muestra el número de personas registradas.
+- `ListEmptyComponent`: muestra un mensaje cuando la lista está vacía.
+- `ItemSeparatorComponent`: añade separación entre los elementos.
+
+**5. Resumen final**
+
+Se incorpora el botón «Mostrar resumen final», que muestra mediante una alerta los datos de todas las personas registradas:
+
+- Nombre.
+- Edad.
+- Estado civil.
+- Situación de jubilación.
+
+### Componentes y conceptos utilizados
+
+- `View`
+- `Text`
+- `TextInput`
+- `Switch`
+- `Button`
+- `FlatList`
+- `Alert`
+- `StyleSheet`
+- `useState`
+- Tipos y funciones genéricas de TypeScript.
+- Formularios controlados.
+- Validación de datos.
+- Listas virtualizadas.
+
+### Resultado
+
+![Práctica 15](./capturas/practica15.png)
