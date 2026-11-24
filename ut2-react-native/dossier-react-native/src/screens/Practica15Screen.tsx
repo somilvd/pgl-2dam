@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import {
     Alert,
@@ -55,11 +54,7 @@ export default function Practica15Screen() {
       return;
     }
 
-    if (
-      datos.edad.trim() === '' ||
-      !Number.isFinite(edad) ||
-      edad <= 0
-    ) {
+    if (datos.edad.trim() === '' || !Number.isFinite(edad) || edad <= 0) {
       Alert.alert('Error', 'Introduce una edad válida.');
       return;
     }

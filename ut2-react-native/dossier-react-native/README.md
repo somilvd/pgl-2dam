@@ -587,3 +587,92 @@ Se incorpora el botón «Mostrar resumen final», que muestra mediante una alert
 ### Resultado
 
 ![Práctica 15](./capturas/practica15.png)
+
+## Práctica 16. Lista de productos
+
+Para mantener la práctica anterior sin modificaciones, he creado la pantalla `src/screens/Practica16Screen.tsx` sustituyendo la gestión de personas por un listado de productos con nombre, precio y stock. Para ello, he definido dos tipos distintos: `DatosProducto` (con todos los campos como `string` para gestionar las entradas de los `TextInput`) y `Producto` (con `precio` y `stock` convertidos a `number` tras validar que sean valores numéricos válidos).
+
+En el componente `FlatList` he eliminado `ItemSeparatorComponent` para mostrar los elementos de forma continua sin separación entre filas, he utilizado el parámetro `index` dentro de `renderItem` (`index % 2 === 0`) para alternar el color de fondo entre posiciones pares e impares, y he configurado `ListHeaderComponent` con el título «Lista Productos» centrado y con mayor tamaño de fuente.
+
+Código de la lista y validación en `src/screens/Practica16Screen.tsx`:
+
+```tsx
+const nuevoProducto: Producto = {
+  id: Date.now().toString(),
+  nombre: nombre,
+  precio: precio,
+  stock: stock,
+};
+
+setProductos(actual => [...actual, nuevoProducto]);
+```
+
+```tsx
+<FlatList
+  data={productos}
+  keyExtractor={item => item.id}
+  renderItem={({ item, index }) => (
+    <View
+      style={[
+        styles.elemento,
+        { backgroundColor: index % 2 === 0 ? '#FFFFFF' : '#E0E0E0' },
+      ]}
+    >
+      <Text style={styles.nombre}>{item.nombre}</Text>
+      <Text>Precio: {item.precio.toFixed(2)} €</Text>
+      <Text>Stock: {item.stock}</Text>
+    </View>
+  )}
+  ListHeaderComponent={
+    <Text style={styles.cabecera}>Lista Productos</Text>
+  }
+  ListEmptyComponent={
+    <Text style={styles.vacio}>
+      Todavía no hay productos registrados.
+    </Text>
+  }
+/>
+```
+
+Resultado:
+
+![](./capturas/practica16.png)
+
+## Práctica 17. Tarjetas para calcular el IMC
+
+Para mantener las prácticas anteriores sin modificaciones, he creado el componente reutilizable `src/components/CardPersona.tsx` y la pantalla contenedora `src/screens/Practica17Screen.tsx`. La pantalla mantiene únicamente un array con los identificadores únicos (`ids`) de las tarjetas generados mediante `Date.now().toString()` al pulsar el botón «+», utilizando claves estables (`keyExtractor={id => id}`) para que cada tarjeta conserve su estado interno al eliminar otra.
+
+Cada componente `CardPersona` gestiona sus propios estados locales (`nombre`, `altura` y `peso`), valida que ambas cifras sean números finitos mayores que cero para evitar divisiones entre cero (`alturaNum > 0`) y calcula el índice de masa corporal aplicando la fórmula `peso / (altura * altura)`. Además, recibe por *props* la función `onEliminar(id)` para notificar al componente padre cuando se pulsa el botón de eliminar.
+
+Código principal de `src/components/CardPersona.tsx`:
+
+```tsx
+const alturaNum = Number(altura.replace(',', '.'));
+const pesoNum = Number(peso.replace(',', '.'));
+
+const datosValidos =
+  Number.isFinite(alturaNum) &&
+  alturaNum > 0 &&
+  Number.isFinite(pesoNum) &&
+  pesoNum > 0;
+
+const imc = datosValidos ? pesoNum / (alturaNum * alturaNum) : null;
+```
+
+Código de gestión de tarjetas en `src/screens/Practica17Screen.tsx`:
+
+```tsx
+function anadirTarjeta() {
+  const nuevoId = Date.now().toString();
+  setIds(actual => [...actual, nuevoId]);
+}
+
+function eliminarTarjeta(idAEliminar: string) {
+  setIds(actual => actual.filter(id => id !== idAEliminar));
+}
+```
+
+Resultado:
+
+![](./capturas/practica17.png)
+
