@@ -676,3 +676,132 @@ Resultado:
 
 ![](./capturas/practica17.png)
 
+## Práctica 18. Diario de emociones
+
+Para mantener las prácticas anteriores intactas, he creado la pantalla `src/screens/Practica18Screen.tsx` y la he enlazado en `src/app/index.tsx`. La interfaz incluye un campo de texto (`TextInput`), un botón táctil (`TouchableOpacity`) y un listado dinámico (`FlatList`) que conserva todas las entradas almacenadas en un array de estado (`entradas`).
+
+Al pulsar el botón, se captura la fecha y hora exacta mediante `new Date().toLocaleDateString()` y `toLocaleTimeString()` (incluyendo los segundos), y se analiza el texto con `.includes()` para asignar un icono de `@expo/vector-icons` (`Ionicons`) según contenga `:-)` o `:-(`.
+
+Código principal en `src/screens/Practica18Screen.tsx`:
+
+```tsx
+const detectarEmocion = (mensaje: string): 'feliz' | 'triste' | 'neutral' => {
+  if (mensaje.includes(':-)')) return 'feliz';
+  if (mensaje.includes(':-(')) return 'triste';
+  return 'neutral';
+};
+
+const agregarEntrada = () => {
+  const contenido = texto.trim();
+  if (!contenido) return;
+
+  const ahora = new Date();
+  const fechaFormateada = `${ahora.toLocaleDateString()} ${ahora.toLocaleTimeString()}`;
+
+  const nuevaEntrada: EntradaDiario = {
+    id: Date.now().toString(),
+    texto: contenido,
+    fecha: fechaFormateada,
+    emocion: detectarEmocion(contenido),
+  };
+
+  setEntradas((prev) => [nuevaEntrada, ...prev]);
+  setTexto('');
+};
+```
+
+Resultado:
+
+![](./capturas/practica18.png)
+
+## Práctica 19. Insertar emoticonos en el texto
+
+Para respetar la regla del dossier de mantener `src/app/index.tsx` como índice general de prácticas sin alterar los ejercicios anteriores, he migrado la navegación del proyecto a **Expo Router** mediante `src/app/_layout.tsx` y he creado la ruta independiente `src/app/practica19.tsx` (`/practica19`), que renderiza `src/screens/Practica19Screen.tsx`.
+
+La pantalla muestra una fila de botones táctiles (`TouchableOpacity`) con iconos de `@expo/vector-icons` (`Ionicons`) encima de un `TextInput` controlado (`value={texto}` y `onChangeText={setTexto}`). Al pulsar cualquiera de los iconos, se actualiza el estado con la función flecha `setTexto((actual) => actual + ' ' + secuencia)` para añadir la secuencia correspondiente al final del texto sin borrar lo ya escrito.
+
+Código principal en `src/screens/Practica19Screen.tsx`:
+
+```tsx
+const EMOTICONOS: EmoticonoOpcion[] = [
+  { id: 'feliz', icono: 'happy-outline', color: '#2e7d32', secuencia: ':-)' },
+  { id: 'triste', icono: 'sad-outline', color: '#c62828', secuencia: ':-(' },
+  { id: 'sorpresa', icono: 'alert-circle-outline', color: '#ed6c02', secuencia: ':-O' },
+  { id: 'guino', icono: 'eye-outline', color: '#0288d1', secuencia: ';-)' },
+];
+
+const insertarEmoticono = (secuencia: string) => {
+  setTexto((actual) => actual + ' ' + secuencia);
+};
+```
+
+Además, he dejado configurada la estructura base de **Stack Navigation** en `src/app/stack/p20/` (`_layout.tsx`, `index.tsx` con `<Link href="/stack/p20/detalle">` y `detalle.tsx` con `router.back()`) lista para las prácticas de navegación.
+
+Resultado:
+
+![](./capturas/practica19.png)
+
+
+## Práctica 20. Primer Stack
+
+Para mantener `src/app/index.tsx` únicamente como índice general de prácticas, he organizado este ejercicio en la ruta independiente `src/app/stack/p20/` enlazada mediante `<Link href="/stack/p20">`.
+
+La carpeta contiene su propio navegador de pila (`_layout.tsx` con `Stack` de `expo-router`), que muestra la cabecera superior con el título configurado en `options={{ title: '...' }}` y permite desplazarse entre `index.tsx` (`HomeScreen`) y `detalle.tsx` utilizando `router.push('/stack/p20/detalle')` para avanzar y `router.back()` (o el botón nativo de la cabecera) para regresar.
+
+Código principal de navegación en `src/app/stack/p20/_layout.tsx` y `index.tsx`:
+
+```tsx
+// src/app/stack/p20/_layout.tsx
+export default function P20Layout() {
+  return (
+    <Stack>
+      <Stack.Screen name="index" options={{ title: 'Inicio (HomeScreen)' }} />
+      <Stack.Screen name="detalle" options={{ title: 'Segunda Pantalla' }} />
+    </Stack>
+  );
+}
+```
+
+```tsx
+// Navegación desde HomeScreen hacia detalle
+<TouchableOpacity onPress={() => router.push('/stack/p20/detalle')}>
+  <Text>Ir a la segunda pantalla</Text>
+</TouchableOpacity>
+```
+
+Resultado:
+
+![](./capturas/practica20-inicio.png)
+
+![](./capturas/practica20-segunda.png)
+
+## Práctica 21. Stack con tres pantallas
+
+Para conservar la Práctica 20 intacta y mantener `src/app/index.tsx` como índice general, he creado la carpeta `src/app/stack/p21/` con su propio navegador `Stack` (`_layout.tsx`) y tres pantallas: `index.tsx`, `segunda.tsx` y `tercera.tsx`.
+
+Desde la primera pantalla se puede navegar hacia la segunda o directamente hacia la tercera enviando un parámetro mediante `router.push({ pathname: '/stack/p21/tercera', params: { userName } })`. En la pantalla de destino se recupera el valor con `useLocalSearchParams<{ userName?: string }>()` y se muestra un saludo personalizado, permitiendo volver atrás tanto desde el botón en pantalla (`router.back()`) como desde la flecha de la cabecera o el botón físico de Android.
+
+Código principal de envío y recepción de parámetros en `src/app/stack/p21/`:
+
+```tsx
+// Envío desde index.tsx
+router.push({
+  pathname: '/stack/p21/tercera',
+  params: { userName: nombre.trim() || 'invitado' },
+});
+```
+
+```tsx
+// Recepción en tercera.tsx
+const { userName } = useLocalSearchParams<{ userName?: string }>();
+// <Text>Hola, {userName ?? 'invitado'}</Text>
+```
+
+Resultado:
+
+![](./capturas/practica21-inicio.png)
+
+![](./capturas/practica21-segunda.png)
+
+![](./capturas/practica21-tercera.png)
+
