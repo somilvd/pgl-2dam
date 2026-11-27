@@ -805,3 +805,15 @@ Resultado:
 
 ![](./capturas/practica21-tercera.png)
 
+## Práctica 22. Personalizar la cabecera y Context
+
+En esta práctica he creado un navegador `Stack` anidado de dos pantallas dentro de `src/app/stack/p22/` con su cabecera personalizada y un proveedor de contexto (`TareasContext`) definido en el propio `_layout.tsx` para compartir una lista de tareas entre ambas pantallas sin pasar propiedades manualmente.
+
+### Resultado
+
+He logrado personalizar la cabecera de un `Stack` independiente dentro del proyecto y compartir el estado de una lista de tareas entre dos pantallas mediante `Context`, verificando que los gestos de navegación de Android mantienen su funcionamiento habitual.
+
+Añado 2 tareas:
+![](./capturas/practica22-segunda.png)
+
+![](./capturas/practica22-primera.png)

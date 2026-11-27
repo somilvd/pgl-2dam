@@ -28,6 +28,7 @@ export default function Index() {
       <Link href="/practica19" style={styles.enlace}>Práctica 19</Link>
       <Link href="/stack/p20" style={styles.enlace}>Práctica 20</Link>
       <Link href="/stack/p21" style={styles.enlace}>Práctica 21</Link>
+      <Link href="/stack/p22" style={styles.enlace}>Práctica 22</Link>
     </ScrollView>
   );
 }
